@@ -3,7 +3,7 @@ $(function() {
 	var app = new App();
 	
 	var calcTimer = setInterval(function() {
-		if (!app.isGameStart()) {
+		if (!app.isGameStart() || app.isGamePause()) {
 			return;
 		}
 		
@@ -19,11 +19,20 @@ $(function() {
 	
 
 	$('body').keydown(function(event) {
-		if (!app.isGameStart()) {
+		if (app.isGamePause()) {
+			if (app.isKeySpace(event)) {
+				app.continueGame();
+			}
+		} else if (!app.isGameStart()) {
 			if (app.isKeySpace(event)) {
 				app.startGame();
 			}
 		} else {
+			if (app.isKeyPause(event)) {
+				app.pauseGame();
+				return;
+			}
+			
 			if (isKeyLocked) {
 				return;
 			}

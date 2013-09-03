@@ -5,6 +5,7 @@ function App() {
 	this.canvasHeight = 256;
 	this.color = '#789';
 	this.gameRun = false;
+	this.gamePause = false;
 	this.apple = {x: -1, y: -1};
 	
 	// create canvas
@@ -98,6 +99,27 @@ App.prototype.showGameWinMsg = function() {
 	this.context.closePath();
 }
 
+App.prototype.showGamePauseMsg = function() {
+	this.context.beginPath();
+	this.context.fillStyle = 'rgba(0, 0, 0, 0.7)';
+	this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+	this.context.closePath();
+	
+	this.context.beginPath();
+	this.context.font = "normal normal 32px monospace";
+	this.context.fillStyle = '#aa0000';
+	this.context.textAlign = "center";
+	this.context.fillText("Pause", this.canvasWidth / 2, this.canvasHeight / 2);
+	this.context.closePath();
+	
+	this.context.beginPath();
+	this.context.font = "normal normal 14px monospace";
+	this.context.fillStyle = '#aa0000';
+	this.context.textAlign = "center";
+	this.context.fillText("Press space to continue", this.canvasWidth / 2, this.canvasHeight / 2 + 32);
+	this.context.closePath();
+}
+
 App.prototype.showStartMsg = function() {
 	this.context.beginPath();
 	this.context.fillStyle = 'rgba(0, 0, 0, 0.7)';
@@ -144,6 +166,26 @@ App.prototype.stopGame = function(status) {
 			this.showGameWinMsg();
 			break;
 	}
+}
+
+App.prototype.isGamePause = function() {
+	return this.gamePause;
+}
+
+App.prototype.pauseGame = function() {
+	this.gamePause = true;
+	this.showGamePauseMsg();
+}
+
+App.prototype.continueGame = function() {
+	this.gamePause = false;
+}
+
+App.prototype.isKeyPause = function(event) {
+	if (this.isKeySpace(event) || event.keyCode == 80) {
+		return true;
+	}
+	return false;
 }
 
 App.prototype.isKeyUp = function(event) {
