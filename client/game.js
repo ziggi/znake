@@ -15,7 +15,7 @@ $(function() {
 		}
 		
 		isKeyLocked = false;
-	}, 200);
+	}, 1000 / 6);
 	
 
 	$('body').keydown(function(event) {
