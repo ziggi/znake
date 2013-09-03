@@ -3,7 +3,7 @@ $(function() {
 	var app = new App();
 	
 	var calcTimer = setInterval(function() {
-		if (!app.isGameStart() || app.isGamePause()) {
+		if (!app.isStatusOn() || app.isStatusPause()) {
 			return;
 		}
 		
@@ -11,7 +11,7 @@ $(function() {
 		app.updateScene();
 		
 		if (isEnd) {
-			app.stopGame(isEnd);
+			app.setGameOff(isEnd);
 		}
 		
 		isKeyLocked = false;
@@ -19,17 +19,17 @@ $(function() {
 	
 
 	$('body').keydown(function(event) {
-		if (app.isGamePause()) {
+		if (app.isStatusPause()) {
 			if (app.isKeySpace(event)) {
-				app.continueGame();
+				app.setPauseOff();
 			}
-		} else if (!app.isGameStart()) {
+		} else if (!app.isStatusOn()) {
 			if (app.isKeySpace(event)) {
-				app.startGame();
+				app.setGameOn();
 			}
 		} else {
 			if (app.isKeyPause(event)) {
-				app.pauseGame();
+				app.setPauseOn();
 				return;
 			}
 			
