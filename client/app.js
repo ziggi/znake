@@ -8,20 +8,20 @@ function App() {
 	this.gamePause = false;
 	this.apple = {x: -1, y: -1};
 	
-	// create canvas
-	$('#main').css('text-align', 'center');
-	
-	$('<canvas>').attr({
-		id: 'canvas',
-		width: this.canvasWidth,
-		height: this.canvasHeight
-	}).css({
-		border: '1px solid #444'
-	}).appendTo('#main');
-	
+	// centring
+	document.getElementById('main').style.textAlign = 'center';
+
+	// configuring canvas
 	this.canvas = document.getElementById('canvas');
+
+	this.canvas.width = this.canvasWidth;
+	this.canvas.height = this.canvasHeight;
+	this.canvas.style.border = '1px solid #444';
+
+	// context
 	this.context = canvas.getContext('2d');
 	
+	// scene
 	this.sceneWidth = Math.ceil(this.canvasWidth / this.cellSize);
 	this.sceneHeight = Math.ceil(this.canvasHeight / this.cellSize);
 	
@@ -36,7 +36,7 @@ function App() {
 App.prototype.updateScene = function() {
 	// clear scene
 	this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-	
+
 	// snake
 	for (var i = this.snake.getSize() - 1; i != -1; i--) {
 		if (i == 0) {
