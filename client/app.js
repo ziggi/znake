@@ -3,6 +3,7 @@ function App() {
 	this.cellSize = 16;
 	this.canvasWidth = 256;
 	this.canvasHeight = 256;
+	this.backgroundColor = '#000';
 	this.color = '#789';
 	this.gameRun = false;
 	this.gamePause = false;
@@ -35,7 +36,8 @@ function App() {
 
 App.prototype.updateScene = function() {
 	// clear scene
-	this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+	this.context.fillStyle = this.backgroundColor;
+	this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
 
 	// snake
 	for (var i = this.snake.getSize() - 1; i != -1; i--) {
