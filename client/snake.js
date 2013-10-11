@@ -1,9 +1,13 @@
 function Snake(app) {
+	// get data from app
 	this.sceneWidth = app.sceneWidth;
 	this.sceneHeight = app.sceneHeight;
 	this.cellSize = app.cellSize;
+
+	// apple object
 	this.apple = {x: -1, y: -1};
 	
+	// snake body
 	var default_x = Math.ceil(this.sceneWidth / 2);
 	var default_y = Math.ceil(this.sceneHeight / 2);
 	
@@ -13,12 +17,14 @@ function Snake(app) {
 		{x: default_x, y: default_y + 1}
 	];
 	
+	// set route
 	this.setRouteUp();
 }
 
 Snake.prototype.move = function() {
 	var new_element = {x: this.body[0].x, y: this.body[0].y};
 	
+	// update position
 	if (this.isRouteUp()) {
 		new_element.y -= 1;
 	} else if (this.isRouteDown()) {
@@ -50,11 +56,17 @@ Snake.prototype.move = function() {
 	
 	// if on apple
 	if (new_element.x == this.apple.x && new_element.y == this.apple.y) {
+		// trigger event
+		document.dispatchEvent( new Event('snakeEatEvent') );
+
+		// check for win
 		var isWin = this.addElement();
 		if (isWin) {
 			this.apple = {x: -1, y: -1};
 			return 2;
 		}
+
+		// new apple
 		this.createApple();
 	}
 	
@@ -62,16 +74,19 @@ Snake.prototype.move = function() {
 }
 
 Snake.prototype.createApple = function() {
+	// set new apple pos
 	var newPos = {
 		x: Math.floor(Math.random() * this.sceneWidth),
 		y: Math.floor(Math.random() * this.sceneHeight)
 	};
 	
+	// not on previous pos
 	if (newPos.x == this.apple.x && newPos.y == this.apple.y) {
 		this.createApple();
 		return;
 	}
 	
+	// not on snake
 	for (var i = 0; i < this.getSize(); i++) {
 		if (newPos.x == this.body[i].x && newPos.y == this.body[i].y) {
 			this.createApple();
@@ -79,11 +94,13 @@ Snake.prototype.createApple = function() {
 		}
 	}
 	
+	// update
 	this.apple.x = newPos.x;
 	this.apple.y = newPos.y;
 }
 
 Snake.prototype.addElement = function() {
+	// get place to adding
 	var last_index = this.body.length - 1;
 	
 	var new_element = {
@@ -104,11 +121,14 @@ Snake.prototype.addElement = function() {
 		new_element.y -= 1;
 	}
 	
+	// push in array
 	this.body.push(new_element);
 	
+	// check on win
 	if (this.getSize() == this.sceneWidth * this.sceneHeight) {
 		return true;
 	}
+
 	return false;
 }
 

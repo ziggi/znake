@@ -5,6 +5,7 @@ function App() {
 	this.canvasHeight = 256;
 	this.backgroundColor = '#000';
 	this.color = '#789';
+	this.score = 0;
 	this.gameRun = false;
 	this.gamePause = false;
 	this.apple = {x: -1, y: -1};
@@ -32,6 +33,12 @@ function App() {
 	// show
 	this.updateScene();
 	this.showMsg('Znake!', 'Press space to play');
+
+	document.addEventListener('snakeEatEvent', this.onSnakeEat.bind(this), false);
+}
+
+App.prototype.onSnakeEat = function() {
+	this.score++;
 }
 
 App.prototype.updateScene = function() {
@@ -65,25 +72,38 @@ App.prototype.updateScene = function() {
 
 */
 
-App.prototype.showMsg = function(header, action) {
+App.prototype.showMsg = function(header, action, addition) {
+	// background
 	this.context.beginPath();
 	this.context.fillStyle = 'rgba(0, 0, 0, 0.7)';
 	this.context.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
 	this.context.closePath();
-	
+
+	// top text
 	this.context.beginPath();
 	this.context.font = "normal normal 32px monospace";
 	this.context.fillStyle = '#aa0000';
 	this.context.textAlign = "center";
 	this.context.fillText(header, this.canvasWidth / 2, this.canvasHeight / 2);
 	this.context.closePath();
-	
+
+	// middle text
 	this.context.beginPath();
 	this.context.font = "normal normal 14px monospace";
 	this.context.fillStyle = '#aa0000';
 	this.context.textAlign = "center";
 	this.context.fillText(action, this.canvasWidth / 2, this.canvasHeight / 2 + 32);
 	this.context.closePath();
+
+	// bottom addition text
+	if (addition !== undefined) {
+		this.context.beginPath();
+		this.context.font = "normal normal 14px monospace";
+		this.context.fillStyle = '#aa0000';
+		this.context.textAlign = "center";
+		this.context.fillText(addition, this.canvasWidth / 2, this.canvasHeight - 32);
+		this.context.closePath();
+	}
 }
 
 /*
@@ -109,12 +129,12 @@ App.prototype.setGameOff = function(status) {
 	switch (status) {
 		// game over
 		case 1:
-			this.showMsg('Game Over', 'Press space to play');
+			this.showMsg('Game Over', 'Press space to play', 'Score: ' + this.score);
 			break;
 		
 		// game win
 		case 2:
-			this.showMsg('You Win!', 'Press space to play');
+			this.showMsg('You Win!', 'Press space to play', 'Score: ' + this.score);
 			break;
 	}
 }
