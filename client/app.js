@@ -137,6 +137,9 @@ App.prototype.setGameOff = function(status) {
 			this.showMsg('You Win!', 'Press space to play', 'Score: ' + this.score);
 			break;
 	}
+
+	// zeroing variables
+	this.score = 0;
 }
 
 /*
