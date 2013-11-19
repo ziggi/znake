@@ -1,3 +1,11 @@
+/*
+
+	Znake!
+	
+	Snake game with HTML5
+
+*/
+
 var game = new Game();
 
 // app init function
