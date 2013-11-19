@@ -16,17 +16,18 @@ function Game() {
 		};
 	
 	// centring
-	document.getElementById('main').style.textAlign = 'center';
+	document.body.style.textAlign = 'center';
 
-	// configuring canvas
-	this.canvas = document.getElementById('canvas');
+	// create canvas
+	this.canvas = document.createElement('canvas');
+	document.body.appendChild(this.canvas);
 
 	this.canvas.width = this.canvasWidth;
 	this.canvas.height = this.canvasHeight;
 	this.canvas.style.border = '1px solid #444';
 
 	// context
-	this.context = canvas.getContext('2d');
+	this.context = this.canvas.getContext('2d');
 	
 	// scene
 	this.sceneWidth = Math.ceil(this.canvasWidth / this.cellSize);
