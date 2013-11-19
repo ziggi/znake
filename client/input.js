@@ -11,7 +11,7 @@
 
 	function isKey(key) {
 		var code;
-		if (typeof keys[key] != 'undefined') {
+		if (typeof keys[key] !== 'undefined') {
 			code = keys[key];
 		} else {
 			code = key.charCodeAt(0);
@@ -22,6 +22,7 @@
 	window.input = {
 		isKey: function(key) {
 			return isKey(key.toUpperCase());
-		}
+		},
+		isLock: false
 	};
 })();

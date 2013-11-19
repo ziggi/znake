@@ -47,6 +47,7 @@ Game.prototype.update = function() {
 	if (this.getStatus() == 0) {
 		this.snake.update();
 	}
+	input.isLock = false;
 }
 
 Game.prototype.reset = function() {
@@ -174,7 +175,9 @@ Game.prototype.handleInput = function(event) {
 		}
 	}
 
-	if (this.getStatus() == this.STATUS.PLAY) {
+	if (this.getStatus() == this.STATUS.PLAY && !input.isLock) {
+		input.isLock = true;
+
 		if ((input.isKey('UP') || input.isKey('w')) && !this.snake.isRoute('DOWN')) {
 			this.snake.setRoute('UP');
 		} else if ((input.isKey('DOWN') || input.isKey('s')) && !this.snake.isRoute('UP')) {
