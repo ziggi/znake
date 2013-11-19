@@ -1,15 +1,18 @@
-function Snake(app) {
-	// get data from app
-	this.sceneWidth = app.sceneWidth;
-	this.sceneHeight = app.sceneHeight;
-	this.cellSize = app.cellSize;
+function Snake(game) {
+	// get data from game
+	this.game = game;
 
-	// apple object
-	this.apple = {x: -1, y: -1};
+	// route const
+	this.ROUTE = {
+			UP: 2,
+			DOWN: 0,
+			LEFT: 1,
+			RIGHT: 3
+		};
 	
 	// snake body
-	var default_x = Math.ceil(this.sceneWidth / 2);
-	var default_y = Math.ceil(this.sceneHeight / 2);
+	var default_x = Math.ceil(this.game.sceneWidth / 2);
+	var default_y = Math.ceil(this.game.sceneHeight / 2);
 	
 	this.body = [
 		{x: default_x, y: default_y - 1},
@@ -18,36 +21,38 @@ function Snake(app) {
 	];
 	
 	// set route
-	this.setRouteUp();
+	this.setRoute('UP');
 }
 
-Snake.prototype.move = function() {
+Snake.prototype.update = function() {
 	var new_element = {x: this.body[0].x, y: this.body[0].y};
 	
 	// update position
-	if (this.isRouteUp()) {
+	if (this.isRoute('UP')) {
 		new_element.y -= 1;
-	} else if (this.isRouteDown()) {
+	} else if (this.isRoute('DOWN')) {
 		new_element.y += 1;
-	} else if (this.isRouteLeft()) {
+	} else if (this.isRoute('LEFT')) {
 		new_element.x -= 1;
-	} else if (this.isRouteRight()) {
+	} else if (this.isRoute('RIGHT')) {
 		new_element.x += 1;
 	}
 	
 	// if on itself
 	for (var i = 0; i < this.getSize() - 1; i++) {
 		if (new_element.x == this.body[i].x && new_element.y == this.body[i].y) {
-			return 1;
+			this.game.setStatus(this.game.STATUS.GAMEOVER);
+			return;
 		}
 	}
 	
 	// if outside scene
-	var isOutsideX = new_element.x < 0 || new_element.x > this.sceneWidth - 1;
-	var isOutsideY = new_element.y < 0 || new_element.y > this.sceneHeight - 1;
+	var isOutsideX = new_element.x < 0 || new_element.x > this.game.sceneWidth - 1;
+	var isOutsideY = new_element.y < 0 || new_element.y > this.game.sceneHeight - 1;
 	
 	if (isOutsideX || isOutsideY) {
-		return 1;
+		this.game.setStatus(this.game.STATUS.GAMEOVER);
+		return;
 	}
 	
 	// update array
@@ -55,48 +60,33 @@ Snake.prototype.move = function() {
 	this.body.unshift(new_element);
 	
 	// if on apple
-	if (new_element.x == this.apple.x && new_element.y == this.apple.y) {
-		// trigger event
-		document.dispatchEvent( new Event('snakeEatEvent') );
+	if (new_element.x == this.game.apple.pos.x && new_element.y == this.game.apple.pos.y) {
+		// increase score
+		this.game.score++;
 
 		// check for win
 		var isWin = this.addElement();
 		if (isWin) {
-			this.apple = {x: -1, y: -1};
-			return 2;
+			this.game.apple.remove();
+			this.game.setStatus(this.game.STATUS.GAMEWIN);
+		} else {
+			// new apple
+			this.game.apple.create();
 		}
-
-		// new apple
-		this.createApple();
 	}
 	
 	return 0;
 }
 
-Snake.prototype.createApple = function() {
-	// set new apple pos
-	var newPos = {
-		x: Math.floor(Math.random() * this.sceneWidth),
-		y: Math.floor(Math.random() * this.sceneHeight)
-	};
-	
-	// not on previous pos
-	if (newPos.x == this.apple.x && newPos.y == this.apple.y) {
-		this.createApple();
-		return;
-	}
-	
-	// not on snake
-	for (var i = 0; i < this.getSize(); i++) {
-		if (newPos.x == this.body[i].x && newPos.y == this.body[i].y) {
-			this.createApple();
-			return;
+Snake.prototype.render = function() {
+	for (var i = this.getSize() - 1; i != -1; i--) {
+		if (i == 0) {
+			this.game.context.fillStyle = '#aa0000';
+		} else {
+			this.game.context.fillStyle = this.game.color;
 		}
+		this.game.context.fillRect(this.body[i].x * this.game.cellSize + 1, this.body[i].y * this.game.cellSize + 1, this.game.cellSize - 2, this.game.cellSize - 2);
 	}
-	
-	// update
-	this.apple.x = newPos.x;
-	this.apple.y = newPos.y;
 }
 
 Snake.prototype.addElement = function() {
@@ -125,7 +115,7 @@ Snake.prototype.addElement = function() {
 	this.body.push(new_element);
 	
 	// check on win
-	if (this.getSize() == this.sceneWidth * this.sceneHeight) {
+	if (this.getSize() == this.game.sceneWidth * this.game.sceneHeight) {
 		return true;
 	}
 
@@ -136,34 +126,10 @@ Snake.prototype.getSize = function(route) {
 	return this.body.length;
 }
 
-Snake.prototype.setRouteUp = function() {
-	this.route = 2;
+Snake.prototype.setRoute = function(value) {
+	this.route = this.ROUTE[value];
 }
 
-Snake.prototype.setRouteDown = function() {
-	this.route = 0;
-}
-
-Snake.prototype.setRouteLeft = function() {
-	this.route = 1;
-}
-
-Snake.prototype.setRouteRight = function() {
-	this.route = 3;
-}
-
-Snake.prototype.isRouteUp = function() {
-	return this.route == 2;
-}
-
-Snake.prototype.isRouteDown = function() {
-	return this.route == 0;
-}
-
-Snake.prototype.isRouteLeft = function() {
-	return this.route == 1;
-}
-
-Snake.prototype.isRouteRight = function() {
-	return this.route == 3;
+Snake.prototype.isRoute = function(value) {
+	return this.route == this.ROUTE[value];
 }
