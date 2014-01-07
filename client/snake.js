@@ -4,20 +4,20 @@ function Snake(game) {
 
 	// route const
 	this.ROUTE = {
-			UP: 2,
-			DOWN: 0,
-			LEFT: 1,
-			RIGHT: 3
-		};
+		UP: 2,
+		DOWN: 0,
+		LEFT: 1,
+		RIGHT: 3
+	};
 	
 	// snake body
-	var default_x = Math.ceil(this.game.sceneWidth / 2);
-	var default_y = Math.ceil(this.game.sceneHeight / 2);
+	var defaultPosX = Math.ceil(this.game.sceneWidth / 2);
+	var defaultPosY = Math.ceil(this.game.sceneHeight / 2);
 	
 	this.body = [
-		{x: default_x, y: default_y - 1},
-		{x: default_x, y: default_y},
-		{x: default_x, y: default_y + 1}
+		{x: defaultPosX, y: defaultPosY - 1},
+		{x: defaultPosX, y: defaultPosY},
+		{x: defaultPosX, y: defaultPosY + 1}
 	];
 	
 	// set route
@@ -25,30 +25,33 @@ function Snake(game) {
 }
 
 Snake.prototype.update = function() {
-	var new_element = {x: this.body[0].x, y: this.body[0].y};
+	var newSnakeElement = {
+		x: this.body[0].x,
+		y: this.body[0].y
+	};
 	
 	// update position
 	if (this.isRoute('UP')) {
-		new_element.y -= 1;
+		newSnakeElement.y -= 1;
 	} else if (this.isRoute('DOWN')) {
-		new_element.y += 1;
+		newSnakeElement.y += 1;
 	} else if (this.isRoute('LEFT')) {
-		new_element.x -= 1;
+		newSnakeElement.x -= 1;
 	} else if (this.isRoute('RIGHT')) {
-		new_element.x += 1;
+		newSnakeElement.x += 1;
 	}
 	
 	// if on itself
 	for (var i = 0; i < this.getSize() - 1; i++) {
-		if (new_element.x == this.body[i].x && new_element.y == this.body[i].y) {
+		if (newSnakeElement.x == this.body[i].x && newSnakeElement.y == this.body[i].y) {
 			this.game.setStatus(this.game.STATUS.GAMEOVER);
 			return;
 		}
 	}
 	
 	// if outside scene
-	var isOutsideX = new_element.x < 0 || new_element.x > this.game.sceneWidth - 1;
-	var isOutsideY = new_element.y < 0 || new_element.y > this.game.sceneHeight - 1;
+	var isOutsideX = newSnakeElement.x < 0 || newSnakeElement.x > this.game.sceneWidth - 1;
+	var isOutsideY = newSnakeElement.y < 0 || newSnakeElement.y > this.game.sceneHeight - 1;
 	
 	if (isOutsideX || isOutsideY) {
 		this.game.setStatus(this.game.STATUS.GAMEOVER);
@@ -57,10 +60,10 @@ Snake.prototype.update = function() {
 	
 	// update array
 	this.body.pop();
-	this.body.unshift(new_element);
+	this.body.unshift(newSnakeElement);
 	
 	// if on apple
-	if (new_element.x == this.game.apple.pos.x && new_element.y == this.game.apple.pos.y) {
+	if (newSnakeElement.x == this.game.apple.pos.x && newSnakeElement.y == this.game.apple.pos.y) {
 		// increase score
 		this.game.score++;
 
@@ -81,9 +84,9 @@ Snake.prototype.update = function() {
 Snake.prototype.render = function() {
 	for (var i = this.getSize() - 1; i != -1; i--) {
 		if (i == 0) {
-			this.game.context.fillStyle = '#aa0000';
+			this.game.context.fillStyle = this.game.snakeHeadColor;
 		} else {
-			this.game.context.fillStyle = this.game.color;
+			this.game.context.fillStyle = this.game.snakeColor;
 		}
 		this.game.context.fillRect(this.body[i].x * this.game.cellSize + 1, this.body[i].y * this.game.cellSize + 1, this.game.cellSize - 2, this.game.cellSize - 2);
 	}
@@ -93,7 +96,7 @@ Snake.prototype.addElement = function() {
 	// get place to adding
 	var last_index = this.body.length - 1;
 	
-	var new_element = {
+	var newSnakeElement = {
 		x: this.body[last_index].x,
 		y: this.body[last_index].y
 	};
@@ -102,17 +105,17 @@ Snake.prototype.addElement = function() {
 	var y_diff = this.body[last_index].y - this.body[last_index - 1].y;
 	
 	if (x_diff > 0) {
-		new_element.x += 1;
+		newSnakeElement.x += 1;
 	} else if (x_diff < 0) {
-		new_element.x -= 1;
+		newSnakeElement.x -= 1;
 	} else if (y_diff > 0) {
-		new_element.y += 1;
+		newSnakeElement.y += 1;
 	} else if (y_diff < 0) {
-		new_element.y -= 1;
+		newSnakeElement.y -= 1;
 	}
 	
 	// push in array
-	this.body.push(new_element);
+	this.body.push(newSnakeElement);
 	
 	// check on win
 	if (this.getSize() == this.game.sceneWidth * this.game.sceneHeight) {

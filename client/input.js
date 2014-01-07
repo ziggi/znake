@@ -1,4 +1,4 @@
-(function() {
+(function () {
 	var keys = {
 		SHIFT: 16,
 		CTRL: 17,
@@ -20,7 +20,7 @@
 	}
 
 	window.input = {
-		isKey: function(key) {
+		isKey: function (key) {
 			return isKey(key.toUpperCase());
 		},
 		isLock: false

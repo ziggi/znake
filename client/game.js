@@ -4,16 +4,17 @@ function Game() {
 	this.canvasWidth = 256;
 	this.canvasHeight = 256;
 	this.backgroundColor = '#000';
-	this.color = '#789';
+	this.snakeColor = '#789';
+	this.snakeHeadColor = '#aa0000';
 	this.score = 0;
 	this.status = 1;
 	this.STATUS = {
-			PLAY: 0,
-			NONE: 1,
-			GAMEOVER: 2,
-			GAMEWIN: 3,
-			PAUSE: 4
-		};
+		PLAY: 0,
+		NONE: 1,
+		GAMEOVER: 2,
+		GAMEWIN: 3,
+		PAUSE: 4
+	};
 	
 	// centring
 	document.body.style.textAlign = 'center';
