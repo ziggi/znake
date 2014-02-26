@@ -125,7 +125,7 @@ Snake.prototype.addElement = function() {
 	return false;
 }
 
-Snake.prototype.getSize = function(route) {
+Snake.prototype.getSize = function() {
 	return this.body.length;
 }
 

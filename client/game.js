@@ -46,7 +46,7 @@ Game.prototype.init = function() {
 }
 
 Game.prototype.update = function() {
-	if (this.getStatus() == 0) {
+	if (this.getStatus() == this.STATUS.PLAY) {
 		this.snake.update();
 	}
 	input.isLock = false;
